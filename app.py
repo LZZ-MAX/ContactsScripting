@@ -87,7 +87,9 @@ def pad_string(text, width):
     回傳:
     str: 填充後的字串。
     """
-    return text.ljust(width)
+    chinese_count = sum(1 for char in text if '\u4e00' <= char <= '\u9fff')
+    padding_length = width - len(text) - chinese_count
+    return text + ' ' * max(padding_length, 0)
 
 def display_contacts(contacts):
     """
@@ -100,7 +102,7 @@ def display_contacts(contacts):
     contact_text.delete(1.0, tk.END)
 
     headers = ['姓名', '職稱', 'Email']
-    widths = [12, 30, 30]  # 調整寬度以獲得更好的對齊效果
+    widths = [12, 30, 40]
 
     header_line = ''.join(pad_string(header, width) for header, width in zip(headers, widths))
     contact_text.insert(tk.END, header_line + "\n")
@@ -128,7 +130,6 @@ def tkinter_window():
     root.columnconfigure(1, weight=1)
     root.rowconfigure(1, weight=1)
 
-    # URL Entry
     url_label = ttk.Label(root, text="URL:")
     url_label.grid(row=0, column=0, sticky=tk.W, padx=5, pady=5)
 
@@ -136,16 +137,14 @@ def tkinter_window():
     url_entry.grid(row=0, column=1, sticky=tk.EW, padx=5, pady=5)
     url_entry.insert(0, 'https://csie.ncut.edu.tw/content.php?key=86OP82WJQO')
 
-    # Fetch Button
     fetch_button = ttk.Button(root, text="抓取", command=lambda: display_contacts(scrape_contacts()))
     fetch_button.grid(row=0, column=2, sticky=tk.E, padx=5, pady=5)
 
-    # ScrolledText for displaying contacts
     contact_text = scrolledtext.ScrolledText(root, wrap=tk.WORD, state="disabled", font=("Consolas", 10))
     contact_text.grid(row=1, column=0, columnspan=3, sticky=tk.NSEW, padx=5, pady=5)
 
     root.mainloop()
 
-if __name__ == "__main__":
-    create_table()
-    tkinter_window()
+
+create_table()
+tkinter_window()
