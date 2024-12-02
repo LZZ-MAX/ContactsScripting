@@ -33,7 +33,6 @@ def scrape_contacts(url):
             messagebox.showerror("網路錯誤", f"HTTP 錯誤：{response.status_code}")
     except requests.exceptions.RequestException as e:
         messagebox.showerror("網路錯誤", f"錯誤：{e}")
-        return
 
 
     HTMLContent = response.text
